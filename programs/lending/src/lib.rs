@@ -13,6 +13,10 @@ pub mod lending {
     pub fn initialize_bank(ctx: Context<InitializeBank>, liquidation_threshold: u64, max_ltv: u64) -> Result<()> {
         process_initialize_bank(ctx, liquidation_threshold, max_ltv)
     }
+
+    pub fn initialize_account(ctx: Context<InitializeAccount>, usdc_address: Pubkey) -> Result<()> {
+        process_initialize_account(ctx, usdc_address)
+    }
 }
 
 #[derive(Accounts)]

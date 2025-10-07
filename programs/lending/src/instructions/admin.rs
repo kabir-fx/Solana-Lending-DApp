@@ -3,7 +3,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token_interface::{Mint, TokenInterface, TokenAccount};
 
-use crate::state::Bank;
+use crate::state::{Bank, User};
 
 /// Define the struct needed for our context to create the instruction for intializing a bank
 #[derive(Accounts)]
@@ -53,6 +53,25 @@ pub struct InitializeBank<'info> {
     pub system_program: Program<'info, System>,
 }
 
+/// Define the struct needed for our context to create the instruction for intializing a user account
+#[derive(Accounts)]
+pub struct InitializeAccount<'info> {
+    #[account(mut)]
+    pub signer: Signer<'info>,
+
+    /// Initialize the user account
+    #[account(
+        init,
+        payer = signer,
+        space = 8 + User::INIT_SPACE,
+        seeds = [signer.key().as_ref()],
+        bump,
+    )]
+    pub user_account: Account<'info, User>,
+
+    pub system_program: Program<'info, System>,
+}
+
 /// Instruction to initialize the bank
 /// 
 /// Initialization happened in the stuct so here is - saving the infromation we need to the account state of the bank.
@@ -69,5 +88,18 @@ pub fn process_initialize_bank(ctx: Context<InitializeBank>, liquidation_thresho
     bank.liquidation_threshold = liquidation_threshold;
     bank.max_ltv = max_ltv;
     
+    Ok(())
+}
+
+/// Instruction to initialize the user account
+/// 
+/// Initialization happened in the stuct so here is - saving the infromation we need to the account state of the user. Current USDC address is hardcoded since we need to check it throughout the program.
+pub fn process_initialize_account(ctx: Context<InitializeAccount>, usdc_address: Pubkey) -> Result<()> {
+    let user = &mut ctx.accounts.user_account;
+
+    user.owner = ctx.accounts.signer.key();
+
+    user.usdc_address = usdc_address;
+
     Ok(())
 }
