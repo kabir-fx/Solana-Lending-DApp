@@ -1,9 +1,10 @@
 use anchor_lang::prelude::*;
 use instructions::admin::*;
 use instructions::deposit::*;
-
+use instructions::withdraw::*;
 mod instructions;
 mod state;
+mod errors;
 
 declare_id!("6awyXWuEkqhNWpmPRJpzZXuz8z8KVzh347jjSqywuokC");
 
@@ -25,6 +26,10 @@ pub mod lending {
 
     pub fn deposit(ctx: Context<Deposit>, amount_to_deposit: u64) -> Result<()> {
         process_deposit(ctx, amount_to_deposit)
+    }
+
+    pub fn withdraw(ctx: Context<Withdraw>, amount_to_withdraw: u64) -> Result<()> {
+        process_withdraw(ctx, amount_to_withdraw)
     }
 }
 
