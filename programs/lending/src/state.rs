@@ -15,7 +15,7 @@ pub struct User {
     pub deposited_usdc_shares: u64,
     pub borrowed_usdc: u64,
     pub borrowed_usdc_shares: u64,
-    
+
     pub usdc_address: Pubkey,
 
     pub last_updated: i64,
@@ -32,9 +32,9 @@ pub struct Bank {
     pub total_deposits: u64,
     /// The total amount of deposits shares in the bank.
     pub total_deposits_shares: u64,
-    
+
     /// Since all the accounts in the protocal can be liquidated, we need all these constants to calculate whether an account is healthy or not.
-    /// 
+    ///
     /// Loan to value at which a loan is defined as under-collateralized and can be liquidated.
     pub liquidation_threshold: u64,
     /// % of bonus that will be given to the liquidator as bonus for processing the liquidation.
