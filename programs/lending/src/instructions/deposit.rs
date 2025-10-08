@@ -136,7 +136,8 @@ pub fn process_deposit(ctx: Context<Deposit>, amount_to_deposit: u64) -> Result<
 
     bank.total_deposits += amount_to_deposit;
     bank.total_deposits_shares += user_shares;
-    bank.last_updated = Clock::get()?.unix_timestamp;
+
+    user_account.last_updated = Clock::get()?.unix_timestamp;
 
     Ok(())
 }

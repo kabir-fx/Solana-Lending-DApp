@@ -44,5 +44,7 @@ pub struct Bank {
     /// Maximum percentage of collateral that can be borrowed for a specific asset. Collateral is the asset that is used to secure the loan
     pub max_ltv: u64,
 
+    pub interest_rate: u64,
+
     pub last_updated: i64,
 }

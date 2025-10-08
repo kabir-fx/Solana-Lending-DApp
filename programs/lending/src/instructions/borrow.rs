@@ -1,7 +1,10 @@
 //! Handles the borrow instruction that will be used to cal. the quantity of assests that a user can borrow against their collateral.
 
 use anchor_lang::prelude::*;
-use anchor_spl::{associated_token::AssociatedToken, token_interface::{Mint, TokenAccount, TokenInterface}};
+use anchor_spl::{
+    associated_token::AssociatedToken,
+    token_interface::{Mint, TokenAccount, TokenInterface},
+};
 
 use crate::state::{Bank, User};
 
@@ -66,6 +69,6 @@ pub struct Borrow<'info> {
 /// Before processing the borrow, we need to check if the user has deposited enough collateral to be able to borrow the desired amount.
 pub fn process_borrow(ctx: Context<Borrow>, amount_to_borrow: u64) -> Result<()> {
     // TODO: Implement the borrow logic
-    
+
     Ok(())
 }

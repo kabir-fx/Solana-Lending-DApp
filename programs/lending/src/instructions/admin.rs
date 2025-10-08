@@ -92,6 +92,8 @@ pub fn process_initialize_bank(
     bank.liquidation_threshold = liquidation_threshold;
     bank.max_ltv = max_ltv;
 
+    bank.interest_rate = 0.05 as u64;
+
     Ok(())
 }
 

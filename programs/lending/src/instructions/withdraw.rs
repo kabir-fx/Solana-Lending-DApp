@@ -1,5 +1,7 @@
 //! Handles withdrawals from the protocol
 
+use std::f64::consts::E;
+
 use anchor_lang::prelude::*;
 use anchor_spl::{
     associated_token::AssociatedToken,
@@ -71,6 +73,7 @@ pub struct Withdraw<'info> {
 ///
 /// Before processing the withdrawal, we need to check if the user has depossited enough tokens to be able to withdraw. User cannot withdraw tokens that they already deposited.
 pub fn process_withdraw(ctx: Context<Withdraw>, amount_to_withdraw: u64) -> Result<()> {
+    let bank_account = &mut ctx.accounts.bank;
     let user_account = &mut ctx.accounts.user_account;
 
     // Verify that the user has deposited enough tokens to be able to withdraw
@@ -81,7 +84,25 @@ pub fn process_withdraw(ctx: Context<Withdraw>, amount_to_withdraw: u64) -> Resu
         deposited_tokens = user_account.deposited_sol;
     }
 
-    if amount_to_withdraw > deposited_tokens {
+    // Cal. the interest that the user has earned since the last time they deposited
+
+    // Get the current time diffrance between the last time the user deposited and the current time
+    let time_diff = Clock::get()?.unix_timestamp - user_account.last_updated;
+
+    // Cal. the total deposits after the interest has been applied, taking into the consideration the APY on the bank.
+    bank_account.total_deposits = (bank_account.total_deposits as f64
+        * E.powf(time_diff as f64 * bank_account.interest_rate as f64))
+        as u64;
+
+    // Cal. the current value of 1 share
+    let value_per_share =
+        bank_account.total_deposits as f64 / bank_account.total_deposits_shares as f64;
+
+    // Cal. the user's shares based on the current share value
+    let current_user_shares = deposited_tokens as f64 / value_per_share;
+
+    // Now that we have current user's shares after taking interest into consideration we can perform a check to ensure they are not withdrawing more than they currently hold.
+    if current_user_shares < amount_to_withdraw as f64 {
         return Err(ErrorCode::InsufficientFunds.into());
     }
 
