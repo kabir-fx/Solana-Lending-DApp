@@ -2,9 +2,9 @@ use anchor_lang::prelude::*;
 use instructions::admin::*;
 use instructions::deposit::*;
 use instructions::withdraw::*;
+mod errors;
 mod instructions;
 mod state;
-mod errors;
 
 declare_id!("6awyXWuEkqhNWpmPRJpzZXuz8z8KVzh347jjSqywuokC");
 

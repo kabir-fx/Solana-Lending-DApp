@@ -1,9 +1,15 @@
 //! Handles withdrawals from the protocol
 
 use anchor_lang::prelude::*;
-use anchor_spl::{associated_token::AssociatedToken, token_interface::{Mint, TokenAccount, TokenInterface, TransferChecked, transfer_checked}};
+use anchor_spl::{
+    associated_token::AssociatedToken,
+    token_interface::{transfer_checked, Mint, TokenAccount, TokenInterface, TransferChecked},
+};
 
-use crate::{errors::ErrorCode, state::{Bank, User}};
+use crate::{
+    errors::ErrorCode,
+    state::{Bank, User},
+};
 
 /// Define the struct needed for our context to create the instruction for withdrawing from a bank
 #[derive(Accounts)]
@@ -40,7 +46,7 @@ pub struct Withdraw<'info> {
     pub user_account: Account<'info, User>,
 
     /// User token account we will be withdrawing the asset to.
-    /// 
+    ///
     /// Ideally the account would already have been initialized when the user is depositing the asset, but since we can't guarantee that, we will initialize it if needed.
     #[account(
         init_if_needed,
@@ -62,7 +68,7 @@ pub struct Withdraw<'info> {
 }
 
 /// Instruction to process the withdrawal.
-/// 
+///
 /// Before processing the withdrawal, we need to check if the user has depossited enough tokens to be able to withdraw. User cannot withdraw tokens that they already deposited.
 pub fn process_withdraw(ctx: Context<Withdraw>, amount_to_withdraw: u64) -> Result<()> {
     let user_account = &mut ctx.accounts.user_account;
@@ -98,26 +104,24 @@ pub fn process_withdraw(ctx: Context<Withdraw>, amount_to_withdraw: u64) -> Resu
 
     let cpi_program = ctx.accounts.token_program.to_account_info();
 
-    let signer_seeds: &[&[&[u8]]] = &[
-        &[
-            b"Treasury",    
-            ctx.accounts.mint.to_account_info().key.as_ref(),
-            &[ctx.bumps.bank_token_account],
-        ],
-    ];
+    let signer_seeds: &[&[&[u8]]] = &[&[
+        b"Treasury",
+        ctx.accounts.mint.to_account_info().key.as_ref(),
+        &[ctx.bumps.bank_token_account],
+    ]];
 
-    let cpi_ctx = CpiContext::new(cpi_program, transfer_cpi_accounts)
-        .with_signer(signer_seeds);
+    let cpi_ctx = CpiContext::new(cpi_program, transfer_cpi_accounts).with_signer(signer_seeds);
 
     let decimals = ctx.accounts.mint.decimals;
-    
+
     transfer_checked(cpi_ctx, amount_to_withdraw, decimals)?;
 
     // Update the state of the user and bank to reflect this withdrawal
 
     // Bank
     let bank_account = &mut ctx.accounts.bank;
-    let shares_to_withdraw = (amount_to_withdraw  as f64 / bank_account.total_deposits as f64) * bank_account.total_deposits_shares as f64;
+    let shares_to_withdraw = (amount_to_withdraw as f64 / bank_account.total_deposits as f64)
+        * bank_account.total_deposits_shares as f64;
 
     // User
     let user_account = &mut ctx.accounts.user_account;
@@ -130,7 +134,7 @@ pub fn process_withdraw(ctx: Context<Withdraw>, amount_to_withdraw: u64) -> Resu
         user_account.deposited_sol -= amount_to_withdraw;
         user_account.deposited_sol_shares -= shares_to_withdraw as u64;
     }
-    
+
     // Finally update the state of the bank account
     bank_account.total_deposits -= amount_to_withdraw;
     bank_account.total_deposits_shares -= shares_to_withdraw as u64;
