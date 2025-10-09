@@ -125,6 +125,7 @@ pub fn process_withdraw(ctx: Context<Withdraw>, amount_to_withdraw: u64) -> Resu
 
     let cpi_program = ctx.accounts.token_program.to_account_info();
 
+    // Since we are signing with the bank token account which is a PDA - we hv to define the signer seeds for this CPI to process
     let signer_seeds: &[&[&[u8]]] = &[&[
         b"Treasury",
         ctx.accounts.mint.to_account_info().key.as_ref(),

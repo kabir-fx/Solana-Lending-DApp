@@ -1,7 +1,9 @@
 use anchor_lang::prelude::*;
 use instructions::admin::*;
+use instructions::borrow::*;
 use instructions::deposit::*;
 use instructions::withdraw::*;
+mod constants;
 mod errors;
 mod instructions;
 mod state;
@@ -30,6 +32,10 @@ pub mod lending {
 
     pub fn withdraw(ctx: Context<Withdraw>, amount_to_withdraw: u64) -> Result<()> {
         process_withdraw(ctx, amount_to_withdraw)
+    }
+
+    pub fn borrow(ctx: Context<Borrow>, amount_to_borrow: u64) -> Result<()> {
+        process_borrow(ctx, amount_to_borrow)
     }
 }
 

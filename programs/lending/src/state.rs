@@ -32,6 +32,10 @@ pub struct Bank {
     pub total_deposits: u64,
     /// The total amount of deposits shares in the bank.
     pub total_deposits_shares: u64,
+    /// The total amount of borrows in the bank.
+    pub total_borrows: u64,
+    /// The total amount of borrows shares in the bank.
+    pub total_borrows_shares: u64,
 
     /// Since all the accounts in the protocal can be liquidated, we need all these constants to calculate whether an account is healthy or not.
     ///

@@ -4,4 +4,7 @@ use anchor_lang::prelude::*;
 pub enum ErrorCode {
     #[msg("User has not deposited enough tokens to withdraw")]
     InsufficientFunds,
+
+    #[msg("Requested amount to borrow is greater than the borrowable amount")]
+    OverBorrowableAmount,
 }
