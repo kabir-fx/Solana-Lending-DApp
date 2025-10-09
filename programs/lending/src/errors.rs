@@ -7,4 +7,7 @@ pub enum ErrorCode {
 
     #[msg("Requested amount to borrow is greater than the borrowable amount")]
     OverBorrowableAmount,
+
+    #[msg("User has not borrowed enough tokens to repay")]
+    OverRepay,
 }
