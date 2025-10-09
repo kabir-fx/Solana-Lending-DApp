@@ -172,6 +172,11 @@ pub fn process_borrow(ctx: Context<Borrow>, amount_to_borrow: u64) -> Result<()>
             user_account.borrowed_sol_shares += user_shares;
         }
     }
+    
+    bank_account.total_borrows += amount_to_borrow;
+    bank_account.total_borrows_shares += user_shares;
+
+    user_account.last_updated = Clock::get()?.unix_timestamp;
 
     Ok(())
 }
