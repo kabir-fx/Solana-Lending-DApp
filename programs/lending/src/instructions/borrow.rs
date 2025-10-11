@@ -181,7 +181,7 @@ pub fn process_borrow(ctx: Context<Borrow>, amount_to_borrow: u64) -> Result<()>
     Ok(())
 }
 
-fn calculate_accrued_interest(
+pub fn calculate_accrued_interest(
     deposited: u64,
     interest_rate: u64,
     last_updated: i64,

@@ -4,6 +4,7 @@ use instructions::borrow::*;
 use instructions::deposit::*;
 use instructions::repay::*;
 use instructions::withdraw::*;
+use instructions::liquidate::*;
 
 mod constants;
 mod errors;
@@ -42,6 +43,10 @@ pub mod lending {
 
     pub fn repay(ctx: Context<Repay>, amount_to_repay: u64) -> Result<()> {
         process_repay(ctx, amount_to_repay)
+    }
+
+    pub fn liquidate(ctx: Context<Liquidate>) -> Result<()> {
+        process_liquidate(ctx)
     }
 }
 

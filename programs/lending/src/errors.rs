@@ -10,4 +10,7 @@ pub enum ErrorCode {
 
     #[msg("User has not borrowed enough tokens to repay")]
     OverRepay,
+
+    #[msg("User's account is not unhealthy")]
+    AccountNotUnhealthy,
 }
