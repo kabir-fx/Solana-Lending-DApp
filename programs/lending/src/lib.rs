@@ -2,9 +2,9 @@ use anchor_lang::prelude::*;
 use instructions::admin::*;
 use instructions::borrow::*;
 use instructions::deposit::*;
+use instructions::liquidate::*;
 use instructions::repay::*;
 use instructions::withdraw::*;
-use instructions::liquidate::*;
 
 mod constants;
 mod errors;
