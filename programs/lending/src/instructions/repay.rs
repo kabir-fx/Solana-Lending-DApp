@@ -46,7 +46,8 @@ pub struct Repay<'info> {
     ///
     /// This will be an Associated Token Account for the mint address of the asset we are depositing into the bank.
     #[account(
-        mut,
+        init_if_needed,
+        payer = signer,
         associated_token::mint = mint,
         associated_token::authority = signer,
         associated_token::token_program = token_program,
@@ -111,8 +112,8 @@ pub fn process_repay(ctx: Context<Repay>, amount_to_repay: u64) -> Result<()> {
         // To bank's token account
         to: ctx.accounts.bank_token_account.to_account_info(),
 
-        // Authority is the user token account. Since while initialization we made the user token account the authority itself - we can just set the authority directly here.
-        authority: ctx.accounts.user_token_account.to_account_info(),
+        // Authority is the signer (owner of the user token account)
+        authority: ctx.accounts.signer.to_account_info(),
 
         // Mint of the asset passed in the context (Repay struct)
         mint: ctx.accounts.mint.to_account_info(),
